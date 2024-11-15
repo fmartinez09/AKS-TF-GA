@@ -36,7 +36,7 @@ resource "azurerm_kubernetes_cluster" "k8squickstart" {
   default_node_pool {
     name       = "default"
     node_count = var.node_count
-    vm_size    = "Standard_A2_v2"
+    vm_size    = "Standard_B1ms"
     
   }
 
