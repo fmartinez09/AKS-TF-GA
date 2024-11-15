@@ -2,6 +2,12 @@ name: 'AKS Deployment'
 
 on:
   workflow_dispatch:
+  push:              # Ejecuta el workflow en cada push
+    branches: 
+      - main
+  pull_request:      # Ejecuta en cada PR hacia la rama main
+    branches: 
+      - main
 
 permissions:
   contents: read
