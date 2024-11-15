@@ -1,12 +1,7 @@
-name: 'EKS Deployment'
+name: 'AKS Deployment'
 
 on:
   workflow_dispatch:
-  
-#on:
-  #push:
-    #branches: [ "main" ]
-  #pull_request:
 
 permissions:
   contents: read
@@ -14,6 +9,11 @@ permissions:
 jobs:
   terraform:
     name: 'Terraform'
+    env:
+      ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+      ARM_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
+      ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION }}
+      ARM_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
     runs-on: ubuntu-latest
     environment: production
 
@@ -24,29 +24,22 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v3
-      
-    - name: Configure AWS credentials
-      uses: aws-actions/configure-aws-credentials@v2
-      with:
-        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws-region: us-east-1
 
     - name: Setup Terraform
       uses: hashicorp/setup-terraform@v1
 
     - name: Terraform Init
-      working-directory: Day-One/cluster/
-      run: terraform init -backend-config "bucket=terraformaws11" -backend-config "key=eks-prod.tfstate"
+      working-directory: aks
+      run: terraform init
            
     - name: Terraform Format
-      working-directory: Day-One/cluster/
+      working-directory: aks
       run: terraform fmt
 
     - name: Terraform Plan
-      working-directory: Day-One/cluster/
-      run: terraform plan -var="k8sVersion=1.27"
+      working-directory: aks
+      run: terraform plan
     
     - name: Terraform Apply
-      working-directory: Day-One/cluster/
-      run: terraform apply -var="k8sVersion=1.27" -auto-approve
+      working-directory: aks
+      run: terraform apply -auto-approve
