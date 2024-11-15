@@ -15,7 +15,7 @@ variable "location" {
 
 variable "node_count" {
   type = string
-  default = 3
+  default = 2
 }
 
   variable "k8s_version" {
